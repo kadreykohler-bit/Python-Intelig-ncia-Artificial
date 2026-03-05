@@ -41,7 +41,3 @@ Construção de APIs REST utilizando:
 - IA Generativa  
 - AWS / Azure  
 - Git & GitHub  
-
----
-
-## 📂 Estrutura do Repositório
