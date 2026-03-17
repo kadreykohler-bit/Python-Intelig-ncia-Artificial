@@ -1,0 +1,10 @@
+# Ambiente Virtual (O mais importante!)
+venv/
+
+# Banco de Dados
+sql_app.db
+
+# Arquivos temporários e Cache
+__pycache__/
+.pytest_cache/
+.env

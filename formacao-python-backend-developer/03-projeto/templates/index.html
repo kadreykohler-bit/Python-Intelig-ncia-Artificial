@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Financeiro Pro - Dark Mode</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: #121212; 
+            color: #e0e0e0; 
+            display: flex; 
+            justify-content: center; 
+            padding: 40px; 
+        }
+
+        .card { 
+            background: #1e1e1e; 
+            padding: 2rem; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 25px rgba(0,0,0,0.7); 
+            width: 400px; 
+            text-align: center;
+            border: 1px solid #333;
+        }
+
+        .saldo-box { 
+            background: #252525; 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin: 20px 0; 
+            border-left: 5px solid #4CAF50; 
+        }
+
+        .saldo-valor { 
+            font-size: 2.5em; 
+            color: #81c784; 
+            font-weight: bold; 
+        }
+
+        form { display: flex; flex-direction: column; gap: 12px; text-align: left; }
+        label { font-size: 0.9em; color: #888; margin-top: 5px; }
+
+        input, select { 
+            padding: 12px; 
+            border-radius: 8px; 
+            border: 1px solid #444; 
+            background: #2c2c2c; 
+            color: white;
+            font-size: 1em;
+            transition: 0.3s;
+        }
+
+        /* Classes de cores dinâmicas para o seletor */
+        .cor-receita { color: #81c784 !important; border-color: #81c784 !important; }
+        .cor-despesa { color: #ef5350 !important; border-color: #ef5350 !important; }
+
+        button { 
+            background: #2e7d32; 
+            color: white; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border: none; 
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 8px;
+        }
+
+        button:hover { background: #388e3c; }
+
+        /* Estilo das opções do menu */
+        option { background: #2c2c2c; color: white; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>💰 Financeiro Pro</h1>
+        <div class="saldo-box">
+            <p>Saldo Total</p>
+            <div class="saldo-valor">R$ {{ "%.2f"|format(saldo) }}</div>
+        </div>
+
+        <form id="formTransacao">
+            <label>Valor (R$):</label>
+            <input type="number" id="valor" step="0.01" required>
+            
+            <label>Descrição:</label>
+            <input type="text" id="descricao" placeholder="Ex: Mercado" required>
+            
+            <label>Tipo:</label>
+            <select id="tipo" onchange="atualizarEstiloSeletor()">
+                <option value="receita" style="color: #81c784;">Receita (+)</option>
+                <option value="despesa" style="color: #ef5350;">Despesa (-)</option>
+            </select>
+            
+            <button type="submit">Salvar Transação</button>
+        </form>
+    </div>
+
+    <script>
+        // Função para mudar a cor do seletor conforme a escolha
+        function atualizarEstiloSeletor() {
+            const seletor = document.getElementById('tipo');
+            if (seletor.value === 'receita') {
+                seletor.className = 'cor-receita';
+            } else {
+                seletor.className = 'cor-despesa';
+            }
+        }
+
+        // Inicia a cor ao carregar a página
+        atualizarEstiloSeletor();
+
+        // Envio do formulário
+        document.getElementById('formTransacao').onsubmit = async (e) => {
+            e.preventDefault();
+            const payload = {
+                valor: parseFloat(document.getElementById('valor').value),
+                descricao: document.getElementById('descricao').value,
+                tipo: document.getElementById('tipo').value
+            };
+            const res = await fetch('/transacoes/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            if (res.ok) { 
+                window.location.reload(); 
+            }
+        };
+    </script>
+</body>
+</html>
